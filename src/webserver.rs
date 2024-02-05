@@ -15,7 +15,7 @@ pub async fn star_webserver(cpm0:Arc<tokio::sync::Mutex<ClientPoolManager>>) {
     let app = Router::new().route("/", get(handler));
     // run it
     let listener = tokio::net::TcpListener::bind("0.0.0.0:1220").await.unwrap();
-    println!("listening on {}", listener.local_addr().unwrap());
+    println!("http listening on {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }
 
