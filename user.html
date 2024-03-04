@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入bootstrap的样式表 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>用户注册注销</title>
+</head>
+<body>
+    <!-- 创建一个导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">用户注册注销</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="切换导航">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">首页 <span class="sr-only">(当前)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">关于</a>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <!-- 创建一个注册按钮，点击后弹出注册模态框 -->
+            <button class="btn btn-outline-success my-2 my-sm-0" type="button" data-toggle="modal" data-target="#registerModal">注册</button>
+            <!-- 创建一个登录按钮，点击后弹出登录模态框 -->
+            <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="button" data-toggle="modal" data-target="#loginModal">登录</button>
+            <!-- 创建一个注销按钮，点击后发送注销请求 -->
+            <button class="btn btn-outline-success my-2 my-sm-0 ml-2" type="button" id="logoutBtn">注销</button>
+          </form>
+        </div>
+      </nav>
+
+      <!-- 创建一个注册模态框 -->
+      <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="registerModalLabel">用户注册</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="关闭">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <!-- 创建一个注册表单 -->
+              <form id="registerForm">
+                <div class="form-group">
+                  <label for="username">用户名</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                  <label for="password">密码</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" required>
+                </div>
+                <div class="form-group">
+                  <label for="email">邮箱</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="请输入邮箱" required>
+                </div>
+                <button type="submit" class="btn btn-primary">提交</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 创建一个登录模态框 -->
+      <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="loginModalLabel">用户登录</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="关闭">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <!-- 创建一个登录表单 -->
+              <form id="loginForm">
+                <div class="form-group">
+                  <label for="username">用户名</label>
+                  <input type="text" class="form-control" id="username" name="username" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                  <label for="password">密码</label>
+                  <input type="password" class="form-control" id="password" name="password" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn btn-primary">提交</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 引入jQuery的库 -->
+      <script src="https://cdn.staticfile.org/jquery/3.5.1/jquery.min.js"></script>
+      <!-- 引入bootstrap的js文件 -->
+      <script src="https://cdn.staticfile.org/twitter-bootstrap/4.5.2/js/bootstrap.min.js"></script>
+      <!-- 编写自定义的js代码 -->
+      <script>
+        $(function(){
+          // 当注册表单提交时，阻止默认行为，发送ajax请求
+          $("#registerForm").submit(function(e){
+            e.preventDefault();
+            $.ajax({
+              url: "/register/", // 后端注册路由
+              type: "POST",
+              data: $(this).serialize(), // 表单数据
+              dataType: "json",
+              success: function(data){ // 请求成功后的回调函数
+                if(data.code == 200){ // 如果后端返回的code是200，表示注册成功
+                  alert(data.message); // 弹出提示信息
+                  $("#registerModal").modal("hide"); // 隐藏注册模态框
+                }else{ // 如果后端返回的code不是200，表示注册失败
+                  alert(data.message); // 弹出提示信息
+                }
+              },
+              error: function(){ // 请求失败后的回调函数
+                alert("请求失败，请重试");
+              }
+            });
+          });
+
+          // 当登录表单提交时，阻止默认行为，发送ajax请求
+          $("#loginForm").submit(function(e){
+            e.preventDefault();
+            $.ajax({
+              url: "/login/", // 后端登录路由
+              type: "POST",
+              data: $(this).serialize(), // 表单数据
+              dataType: "json",
+              success: function(data){ // 请求成功后的回调函数
+                if(data.code == 200){ // 如果后端返回的code是200，表示登录成功
+                  alert(data.message); // 弹出提示信息
+                  $("#loginModal").modal("hide"); // 隐藏登录模态框
+                }else{ // 如果后端返回的code不是200，表示登录失败
+                  alert(data.message); // 弹出提示信息
+                }
+              },
+              error: function(){ // 请求失败后的回调函数
+                alert("请求失败，请重试");
+              }
+            });
+          });
+
+          // 当注销按钮点击时，发送ajax请求
+          $("#logoutBtn").click(function(){
+            $.ajax({
+              url: "/logout/", // 后端注销路由
+              type: "GET",
+              dataType: "json",
+              success: function(data){ // 请求成功后的回调函数
+                if(data.code == 200){ // 如果后端返回的code是200，表示注销成功
+                  alert(data.message); // 弹出提示信息
+                }else{ // 如果后端返回的code不是200，表示注销失败
+                  alert(data.message); // 弹出提示信息
+                }
+              },
+              error: function(){ // 请求失败后的回调函数
+                alert("请求失败，请重试");
+              }
+            });
+          });
+        });
+      </script>
+</body>
+</html>
