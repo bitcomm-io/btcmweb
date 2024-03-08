@@ -1,5 +1,6 @@
 pub mod webserver;
-// mod usermanager1;
+pub mod jsonrpc;
+// mod usermanager;
 // mod usermanager2;
 // mod usermanager3;
 // mod usermanager4;
