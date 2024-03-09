@@ -40,11 +40,14 @@
 //! - `star_webserver`：启动 Web 服务器，绑定到指定的地址并提供配置的路由。使用 Bitcomm 记录器记录服务器地址。
 //!
 
+use tracing::info;
+// use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
 use axum::{ routing::{ get, post }, Router };
-use btcmtools::LOGGER;
+// use btcmtools::LOGGER;
 use serde::{Deserialize, Serialize};
-use slog::info;
-use tower_http::services::{ ServeDir, ServeFile };
+// use slog::info;
+use tower_http::{services::{ ServeDir, ServeFile }, trace::TraceLayer};
 use crate::jsonrpc;
 
 /// Bitcomm 管理服务器的 IP 地址。
@@ -107,13 +110,14 @@ async fn login(user: axum::extract::Json<User>) -> axum::response::Json<ApiRespo
 /// 启动 Bitcomm Web 服务器。绑定到指定的地址并提供配置的路由。使用 Bitcomm 记录器记录服务器地址。
 #[allow(unused_variables)]
 pub async fn star_webserver() {
+
     let server_address = get_adminserver_port();
     // 使用路由构建我们的应用程序
-    let app = using_serve_dir_with_assets_fallback();
-
+    let app = using_serve_dir_with_assets_fallback().layer(TraceLayer::new_for_http());
+        // app.layer(TraceLayer::new_for_http());
     // 运行服务器
     let listener = tokio::net::TcpListener::bind(server_address.as_str()).await.unwrap();
-    info!(LOGGER, "http listening {}", listener.local_addr().unwrap());
+    info!("http listening {}", listener.local_addr().unwrap());
     axum::serve(listener, app).await.unwrap();
 }
 
