@@ -1,7 +1,8 @@
+#[allow(unused_imports)]
 use axum::{
     extract::{FromRequest, Json}, http::{self, StatusCode}, response::{Json as JsonResponse, Response}, Extension //routing::post, Router
 };
-use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
+// use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 // use btcmtools::LOGGER;
 use serde::{ Deserialize, Serialize };
 // use slog::info;
@@ -61,34 +62,34 @@ fn error_response(jsonrpc: String, id: serde_json::Value) -> JsonResponseWrapper
     }
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct Claims {
-    // ...您的声明字段...
-}
-use axum::extract::request_parts;
+// #[derive(Debug, Serialize, Deserialize)]
+// struct Claims {
+//     // ...您的声明字段...
+// }
+// use axum::extract::request_parts;
 
-async fn jwt_auth_middleware<B>(
-    mut req: RequestParts<B>,
-) -> Result<RequestParts<B>, Response> {
-    if let Some(auth_header) = req.headers().get(http::header::AUTHORIZATION) {
-        if let Ok(auth_str) = auth_header.to_str() {
-            if auth_str.starts_with("Bearer ") {
-                let token = auth_str.trim_start_matches("Bearer ");
-                let validation = Validation::new(Algorithm::HS256);
-                let key = DecodingKey::from_secret("your-secret-key".as_ref());
-                match decode::<Claims>(token, &key, &validation) {
-                    Ok(_) => return Ok(req),
-                    Err(_) => (),
-                }
-            }
-        }
-    }
+// async fn jwt_auth_middleware<B>(
+//     mut req: RequestParts<B>,
+// ) -> Result<RequestParts<B>, Response> {
+//     if let Some(auth_header) = req.headers().get(http::header::AUTHORIZATION) {
+//         if let Ok(auth_str) = auth_header.to_str() {
+//             if auth_str.starts_with("Bearer ") {
+//                 let token = auth_str.trim_start_matches("Bearer ");
+//                 let validation = Validation::new(Algorithm::HS256);
+//                 let key = DecodingKey::from_secret("your-secret-key".as_ref());
+//                 match decode::<Claims>(token, &key, &validation) {
+//                     Ok(_) => return Ok(req),
+//                     Err(_) => (),
+//                 }
+//             }
+//         }
+//     }
 
-    Err(Response::builder()
-        .status(StatusCode::UNAUTHORIZED)
-        .body("Invalid JWT token".into())
-        .unwrap())
-}
+//     Err(Response::builder()
+//         .status(StatusCode::UNAUTHORIZED)
+//         .body("Invalid JWT token".into())
+//         .unwrap())
+// }
 
 // #[tokio::main]
 // async fn main() {
