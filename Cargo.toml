@@ -28,4 +28,5 @@ r2d2_redis2 = "0.23.3"
 r2d2 = "0.8.10"
 serde_json = "1.0.114"
 argon2 = { version ="0.5.3" , features = ["default"]}
+lazy_static = "1.4.0"
 # r2d2_redis2 = "0.23.3"
