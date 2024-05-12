@@ -76,26 +76,33 @@ fn using_serve_dir_with_assets_fallback() -> Router {
             "/jsonrpc",
             get(|| async { "你好，来自 /jsonrpc 的 Json-RPC" })
         )
-        .route("/register", post(register)).route("/login", post(login))
+        .route("/reguser", post(register))
+        .route("/login", post(login))
         .nest_service("/admin", serve_dir.clone())
         .fallback_service(serve_dir)
 }
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct User {
-    username: String,
-    password: String,
+    username    :  String,
+    password    :  String,
+    codekey     :  String,
+    codevalue   :  String,
 }
 
 #[derive(Serialize)]
 struct ApiResponse {
+    clientid:u64,
+    errorid:u32,
     message: String,
 }
 async fn register(user: axum::extract::Json<User>) -> axum::response::Json<ApiResponse> {
     // TODO: Implement user registration logic, e.g., store in a database
     println!("Registering user: {:?}", user);
     axum::response::Json(ApiResponse {
-        message: "User registered successfully".into(),
+        clientid    :   1001,
+        errorid     :   0,
+        message     :   "User registered successfully".into(),
     })
 }
 
@@ -103,7 +110,9 @@ async fn login(user: axum::extract::Json<User>) -> axum::response::Json<ApiRespo
     // TODO: Implement user login logic, e.g., check credentials in a database
     println!("Logging in user: {:?}", user);
     axum::response::Json(ApiResponse {
-        message: "User logged in successfully".into(),
+        clientid    :   1001,
+        errorid     :   0,
+        message     :   "User logged in successfully".into(),
     })
 }
 

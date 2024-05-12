@@ -12,15 +12,15 @@ use tokio::sync::RwLock;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct JsonRequest {
     /// JSON-RPC 协议版本。
-    jsonrpc: String,
+    jsonrpc :   String,
     /// JSON-RPC 方法名。
-    method: String,
-    /// JSON-RPC 方法参数。
-    params: Option<HashMap<String, serde_json::Value>>,
+    method  :   String,
     /// JSON-RPC 请求 ID。
-    id: serde_json::Value,
+    id      :   serde_json::Value,
     // jwt token
-    jwt_token:String,
+    token   :   String,
+    /// JSON-RPC 方法参数。
+    params  :   Option<HashMap<String, serde_json::Value>>,
 }
 
 /// 表示一个 JSON-RPC 响应包装器。
